@@ -26,7 +26,7 @@ withCredentials([string(credentialsId: 'dockerpw1', variable: 'dockerhubpw')]) {
 }
 
 
-sh 'docker push arunodayraja/arun/my-app:2.0.0'
+sh 'docker push arunodayraja/my-app:2.0.0'
 
 }
 
