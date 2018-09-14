@@ -25,7 +25,13 @@ sshagent(['tomcatconn']) {
     slackSend channel: '#developers',
 				  color: 'good',
 				  message: "Job -  ${env.JOB_NAME}, Completed successfully Build URL is ${env.BUILD_URL}" 
-}}}
+}
+stage('Build docker image'){
+
+sh 'docker build -t arunodayraja/my-app:2.0.0 .'
+
+}
+}}
 catch(error){
   slackSend channel: '#developers',
 				  color: 'danger',
