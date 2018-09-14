@@ -8,7 +8,9 @@ node {
    //branch: "${params.gitBranch}"
     }
     stage('maven build'){
-        sh 'mvn clean package'
+    def mavenhome = tool name: 'maven3', type: 'maven'
+    def mvncmd = "${mavenhome}/bin/mvn"
+        sh  "${mvncmd} clean package"
     }
 	stage('Deploy to Dev'){
     sh 'mv target/*.war target/myweb.war'
