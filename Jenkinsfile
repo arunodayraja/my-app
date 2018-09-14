@@ -31,7 +31,7 @@ sh 'docker push arunodayraja/my-app:2.0.0'
 }
 
 stage('run container on the dev server'){
-def dockerrun = 'docker run -p 8080:8080 -d --name my-app arunodayraja/my-app:2.0.0'
+def dockerrun = 'docker run -p 5555:8080 -d --name my-app arunodayraja/my-app:2.0.0'
 
 sshagent(['tomcatcode1']) {
     sh "ssh -o StrictHostKeyChecking=no ec2-user@172.31.88.152 ${dockerrun}"
