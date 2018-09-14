@@ -27,10 +27,13 @@ sshagent(['tomcatconn']) {
 				  message: "Job -  ${env.JOB_NAME}, Completed successfully Build URL is ${env.BUILD_URL}" 
 }
 stage('Build docker image'){
-
+sh 'sudo usermod -a -G docker $USER'
 sh 'docker build -t arunodayraja/my-app:2.0.0 .'
 
 }
+
+
+
 }}
 catch(error){
   slackSend channel: '#developers',
