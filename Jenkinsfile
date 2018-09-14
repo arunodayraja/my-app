@@ -30,7 +30,7 @@ sh 'docker push arunodayraja/my-app:2.0.0'
 
 }
 
-stage(run container on the dev server){
+stage('run container on the dev server'){
 def dockerrun = 'docker run -p 8080:8080 -d --name my-app arunodayraja/my-app:2.0.0'
 
 sshagent(['tomcatcode1']) {
