@@ -15,6 +15,8 @@ node {
 
 stage('Build docker image'){
 sh 'sudo -S usermod -a -G docker $USER'
+sh 'sudo service jenkins restart'
+
 sh 'docker build -t arunodayraja/my-app:2.0.0 .'
 
 }
