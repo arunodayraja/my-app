@@ -18,7 +18,7 @@ stage('Build docker image'){
 sh 'docker build -t arunodayraja/my-app:2.0.0 .'
 
 }
-stage{
+stage('push docker image'){
 
 withCredentials([string(credentialsId: 'dockerpw', variable: 'dockerhubpw')]) {
     sh "docker login -u arunodayraja -p ${dockerhubpw}"
