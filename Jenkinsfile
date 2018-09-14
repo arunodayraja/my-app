@@ -12,20 +12,7 @@ node {
     def mvncmd = "${mavenhome}/bin/mvn"
         sh  "${mvncmd} clean package"
     }
-	stage('Deploy to Dev'){
-    sh 'mv target/*.war target/myweb.war'
-    
-sshagent(['tomcatconn']) {
-    // some block
-    sh 'ssh -oStrictHostKeyChecking=no ec2-user@172.31.88.152'
-    sh 'ssh ec2-user@172.31.88.152 rm -rf /opt/tomcat8/webapps/myweb*'
-    sh 'scp target/myweb.war ec2-user@172.31.88.152:/opt/tomcat8/webapps'
-    sh 'ssh ec2-user@172.31.88.152 sudo service tomcat restart'
-}
-    slackSend channel: '#developers',
-				  color: 'good',
-				  message: "Job -  ${env.JOB_NAME}, Completed successfully Build URL is ${env.BUILD_URL}" 
-}
+
 stage('Build docker image'){
 sh 'sudo usermod -a -G docker $USER'
 sh 'docker build -t arunodayraja/my-app:2.0.0 .'
