@@ -14,10 +14,22 @@ node {
     }
 
 stage('Build docker image'){
-
+sh 'sudo usermod -a -G root jenkins'
+sh 'sudo service jenkins restart'
 sh 'docker build -t arunodayraja/my-app:2.0.0 .'
 
 }
+stage{
+
+withCredentials([string(credentialsId: 'dockerpw', variable: 'dockerhubpw')]) {
+    sh "docker login -u arunodayraja -p ${dockerhubpw}"
+
+}
+
+sh 'docker push arunodayraja/my-app:2.0.0'
+
+}
+
 }}
 catch(error){
   slackSend channel: '#developers',
