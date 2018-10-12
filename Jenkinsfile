@@ -1,45 +1,23 @@
-try{
-node {
-    
-    properties([parameters([choice(choices: ['master', 'develo-1', 'develo-2', 'slave', 'qa'], description: 'select the branch to process', name: 'Branch')])])
-    
-    stage('git checkout'){
-   git credentialsId: 'github4', url: 'https://github.com/javahometech/my-app'
-   //branch: "${params.gitBranch}"
-    }
-    stage('maven build'){
-    def mavenhome = tool name: 'maven3', type: 'maven'
-    def mvncmd = "${mavenhome}/bin/mvn"
-        sh  "${mvncmd} clean package"
-    }
-
-stage('Build docker image'){
-
-sh 'docker build -t arunodayraja/my-app:2.0.0 .'
-
-}
-stage('push docker image'){
-
-
-withCredentials([string(credentialsId: 'dockerpw1', variable: 'dockerhubpw')]) {
-    sh "docker login -u arunodayraja -p ${dockerhubpw}"
-}
-
-
-sh 'docker push arunodayraja/my-app:2.0.0'
-
-}
-
-stage('run container on the dev server'){
-def dockerrun = 'docker run -p 5555:8080 -d  arunodayraja/my-app:2.0.0'
-
-sshagent(['tomcatcode1']) {
-    sh "ssh -o StrictHostKeyChecking=no ec2-user@172.31.88.152 ${dockerrun}"
-}
-}}}
-catch(error){
-  slackSend channel: '#developers',
-				  color: 'danger',
-				  message: "Job -  ${env.JOB_NAME}, Failed, Build URL is ${env.BUILD_URL}"
-   error 'Something wrong'
+node{
+   stage('SCM Checkout'){
+     git 'https://github.com/javahometech/my-app'
+   }
+   stage('Compile-Package'){
+      // Get maven home path
+      def mvnHome =  tool name: 'maven-3', type: 'maven'   
+      sh "${mvnHome}/bin/mvn package"
+   }
+   stage('Email Notification'){
+      mail bcc: '', body: '''Hi Welcome to jenkins email alerts
+      Thanks
+      Hari''', cc: '', from: '', replyTo: '', subject: 'Jenkins Job', to: 'hari.kammana@gmail.com'
+   }
+   stage('Slack Notification'){
+       slackSend baseUrl: 'https://hooks.slack.com/services/',
+       channel: '#jenkins-pipeline-demo',
+       color: 'good', 
+       message: 'Welcome to Jenkins, Slack!', 
+       teamDomain: 'javahomecloud',
+       tokenCredentialId: 'slack-demo'
+   }
 }
